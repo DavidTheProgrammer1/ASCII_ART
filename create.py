@@ -1,6 +1,6 @@
 import cv2
 import sys
-import numpy
+import numpy   # DONT BLAME ME FOR NOT USING  "import numpy as np"  I WONT DO THAT!!
 
 terminal_stream = sys.stdout
 
