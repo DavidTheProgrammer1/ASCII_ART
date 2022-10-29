@@ -34,6 +34,7 @@ image = cv2.resize(image, dim)   # make it smaller
 image = cv2.resize(image, (int(input("letters on the X axis: ")), int(input("letters on the Y axis: ")))) # resize so that 1px = 1 ASCII char
 
 print("Progress:")
+
 print("0%                     50%                    100%")  # just the progress bar indicator
 
 sys.stdout = open("asciiArtGen_output.txt", "w")   # all print statements will print to the output file by default
