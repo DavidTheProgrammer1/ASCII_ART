@@ -1,4 +1,4 @@
-#Basic ASCII Art Generator
+# Basic ASCII Art Generator
 
 Execute the file, then it should ask you: 
 
