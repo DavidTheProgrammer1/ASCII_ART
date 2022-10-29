@@ -12,4 +12,6 @@ then it asks you how much letters on the x and y axis it should be,
 
 I recommend The proportion X:Y 5:2 for square shaped images.
 
+Note: the bigger the ASCII art, the better it looks!
+
 Then just wait, itll generate the ASCII text file.
