@@ -1,37 +1,49 @@
-import cv2
+from cv2 import COLOR_BGR2GRAY as cv2Gray
+from cv2 import cvtColor as cv2Color
+from cv2 import imread as cv2ImageRead
+from cv2 import resize as cv2Resize
+from numpy import all as npAll
 import sys
-import numpy   # DONT BLAME ME FOR NOT USING  "import numpy as np"  I WONT DO THAT!!
+import os
 
 terminal_stream = sys.stdout
 
-chars = [
-    "@",
-    "#",
-    "]",
-    "P",
-    "I",
-    "L",
-    "x",
-    "+",
-    "/",
-    ":",
-    '"',
-    "_",
-    "-",
-    "`",
-    "."
-]
+chars = ["@", "#", "]", "P", "I", "L", "x", "+", "/", ":", '"', "_", "-", "`", "."]
 
-image = cv2.imread(input("file name: "))
+image = cv2ImageRead(input("image name: "))
 
-image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+image = cv2Color(image, cv2Gray)
 
-width = int(image.shape[1] * 40 / 100)
-height = int(image.shape[0] * 40 / 100)
-dim = (width, height)
+image = cv2Resize(image, (image.shape[1] * 5, image.shape [0] * 2))
+image = cv2Resize(image, None, fx = 0.1, fy = 0.1)
 
-image = cv2.resize(image, dim)
-image = cv2.resize(image, (int(input("letters on the X axis: ")), int(input("letters on the Y axis: "))))
+in1 = input("do you want to keep the generated size? that would be: \n " + str(image.shape[1]) + " letters to the left, and " + str(image.shape[0]) + " letters to the bottom. (y/n)? ")
+
+newscale = (0, 0)
+newscalepercent = 100
+
+def askRescaleText(imge):
+    img = imge
+    if in1 == "y":
+        img = cv2Resize(img, (img.shape[1], img.shape[0]))
+    elif in1 == "n":
+        newscalepercent = int(input("enter the new size in percent (%): "))
+        newscale = (int(img.shape[1] * (newscalepercent / 100)), int(img.shape[0] * (newscalepercent / 100)))
+        in2 = input("the new scale would be: " + str(newscale[0]) + " and " + str(newscale[1]) + "\n Do you want to use this Size (y/n)? ")
+        while in2 != "y":
+            if in2 != "n":
+                print("please enter one of the characters 'y' (for yes) or 'n' (for no) to continue. ")
+            newscalepercent = int(input("enter the new size in percent (%): "))
+            newscale = (int(img.shape[1] * (newscalepercent / 100)), int(img.shape[0] * (newscalepercent / 100)))
+            in2 = input("the new scale would be: " + str(newscale[0]) + " and " + str(newscale[1]) + "\n Do you want to use this Size (y/n)? ")
+        img = cv2Resize(img, newscale)
+    else:
+        print("please enter one of the characters 'y' (for yes) or 'n' (for no) to continue. ")
+        askRescaleText()
+    return img
+image = askRescaleText(image)
+
+os.system("cls")
 
 print("Progress:")
 print("0%                     50%                    100%")
@@ -43,51 +55,36 @@ printed = 0
 
 for y in range(image.shape[0]):
     for x in range(image.shape[1]):
-        if numpy.all(image[y, x] <= 1 * 17) and numpy.all(image[y, x] >= 0 * 17):
+        if npAll(image[y, x] <= 1 * 17) and npAll(image[y, x] >= 0 * 17):
             print(chars[0], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[0], file = terminal_stream)
-        if numpy.all(image[y, x] <= 2 * 17) and numpy.all(image[y, x] >= 1 * 17):
+        if npAll(image[y, x] <= 2 * 17) and npAll(image[y, x] >= 1 * 17):
             print(chars[1], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[1], file = terminal_stream)
-        if numpy.all(image[y, x] <= 3 * 17) and numpy.all(image[y, x] >= 2 * 17):
+        if npAll(image[y, x] <= 3 * 17) and npAll(image[y, x] >= 2 * 17):
             print(chars[2], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[2], file = terminal_stream)
-        if numpy.all(image[y, x] <= 4 * 17) and numpy.all(image[y, x] >= 3 * 17):
+        if npAll(image[y, x] <= 4 * 17) and npAll(image[y, x] >= 3 * 17):
             print(chars[3], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[3], file = terminal_stream)
-        if numpy.all(image[y, x] <= 5 * 17) and numpy.all(image[y, x] >= 4 * 17):
+        if npAll(image[y, x] <= 5 * 17) and npAll(image[y, x] >= 4 * 17):
             print(chars[4], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[4], file = terminal_stream)
-        if numpy.all(image[y, x] <= 6 * 17) and numpy.all(image[y, x] >= 5 * 17):
+        if npAll(image[y, x] <= 6 * 17) and npAll(image[y, x] >= 5 * 17):
             print(chars[5], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[5], file = terminal_stream)
-        if numpy.all(image[y, x] <= 7 * 17) and numpy.all(image[y, x] >= 6 * 17):
+        if npAll(image[y, x] <= 7 * 17) and npAll(image[y, x] >= 6 * 17):
             print(chars[6], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[6], file = terminal_stream)
-        if numpy.all(image[y, x] <= 8 * 17) and numpy.all(image[y, x] >= 7 * 17):
+        if npAll(image[y, x] <= 8 * 17) and npAll(image[y, x] >= 7 * 17):
             print(chars[7], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[7], file = terminal_stream)
-        if numpy.all(image[y, x] <= 9 * 17) and numpy.all(image[y, x] >= 8 * 17):
+        if npAll(image[y, x] <= 9 * 17) and npAll(image[y, x] >= 8 * 17):
             print(chars[8], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[8], file = terminal_stream)
-        if numpy.all(image[y, x] <= 10 * 17) and numpy.all(image[y, x] >= 9 * 17):
+        if npAll(image[y, x] <= 10 * 17) and npAll(image[y, x] >= 9 * 17):
             print(chars[9], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[9], file = terminal_stream)
-        if numpy.all(image[y, x] <= 11 * 17) and numpy.all(image[y, x] >= 10 * 17):
+        if npAll(image[y, x] <= 11 * 17) and npAll(image[y, x] >= 10 * 17):
             print(chars[10], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[10], file = terminal_stream)
-        if numpy.all(image[y, x] <= 12 * 17) and numpy.all(image[y, x] >= 11 * 17):
+        if npAll(image[y, x] <= 12 * 17) and npAll(image[y, x] >= 11 * 17):
             print(chars[11], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[10], file = terminal_stream)
-        if numpy.all(image[y, x] <= 13 * 17) and numpy.all(image[y, x] >= 12 * 17):
+        if npAll(image[y, x] <= 13 * 17) and npAll(image[y, x] >= 12 * 17):
             print(chars[12], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[10], file = terminal_stream)
-        if numpy.all(image[y, x] <= 14 * 17) and numpy.all(image[y, x] >= 13 * 17):
+        if npAll(image[y, x] <= 14 * 17) and npAll(image[y, x] >= 13 * 17):
             print(chars[13], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[10], file = terminal_stream)
-        if numpy.all(image[y, x] <= 15 * 17) and numpy.all(image[y, x] >= 14 * 17):
+        if npAll(image[y, x] <= 15 * 17) and npAll(image[y, x] >= 14 * 17):
             print(chars[14], end = "")
-            # print("x: " + str(x) + " y: " + str(y) + " color: " + str(image[y - 1, x - 1]) + " char: " + chars[10], file = terminal_stream)
     print()
     percent = int((y / image.shape[0]) * 50)
     if percent != printed:
