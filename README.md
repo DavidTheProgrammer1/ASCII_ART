@@ -2,15 +2,13 @@
 
 Execute the file, then it should ask you: 
 
-file name: 
+image name: 
 
 enter the name of the image, for example
 
 image2.jpg
 
-then it asks you how much letters on the x and y axis it should be,
-
-I recommend The proportion X:Y 5:2 for square shaped images.
+then it asks you some quetions about the size, answer them with the letters "y" or "n"  (yes or no), or enter a number when it asks you
 
 Note: the bigger the ASCII art, the better it looks!
 
