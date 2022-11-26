@@ -1,54 +1,107 @@
-from cv2 import COLOR_BGR2GRAY as cv2Gray
-from cv2 import cvtColor as cv2Color
-from cv2 import imread as cv2ImageRead
-from cv2 import resize as cv2Resize
-from numpy import all as npAll
-import sys
+"""
+Python ASCII Art Generation Tool
+"""
 import os
-terminal_stream = sys.stdout
-chars = ["@", "#", "]", "P", "I", "L", "x", "+", "/", ":", '"', "_", "-", ".", "`"]
-image = cv2ImageRead(input("image name: "))
-image = cv2Color(image, cv2Gray)
-image = cv2Resize(image, (image.shape[1] * 5, image.shape [0] * 2))
-image = cv2Resize(image, None, fx = 0.1, fy = 0.1)
-in1 = input("do you want to keep the generated size? that would be: \n" + str(image.shape[1]) + " letters to the left, and " + str(image.shape[0]) + " letters to the bottom. (y/n)? ")
-newscale = (0, 0)
-newscalepercent = 100
-def askRescaleText(imge):
-    img = imge
-    if in1 == "y":
-        img = cv2Resize(img, (img.shape[1], img.shape[0]))
-    elif in1 == "n":
-        newscalepercent = int(input("enter the new size in percent (%): "))
-        newscale = (int(img.shape[1] * (newscalepercent / 100)), int(img.shape[0] * (newscalepercent / 100)))
-        in2 = input("the new scale would be: " + str(newscale[0]) + " and " + str(newscale[1]) + "\nDo you want to use this Size (y/n)? ")
-        while in2 != "y":
-            if in2 != "n":
-                print("please enter one of the characters 'y' (for yes) or 'n' (for no) to continue. ")
-            newscalepercent = int(input("enter the new size in percent (%): "))
-            newscale = (int(img.shape[1] * (newscalepercent / 100)), int(img.shape[0] * (newscalepercent / 100)))
-            in2 = input("the new scale would be: " + str(newscale[0]) + " and " + str(newscale[1]) + "\nDo you want to use this Size (y/n)? ")
-        img = cv2Resize(img, newscale)
-    else:
-        print("please enter one of the characters 'y' (for yes) or 'n' (for no) to continue. ")
-        askRescaleText()
-    return img
-image = askRescaleText(image)
-os.system("cls")
-print("Progress:")
-print("0%                     50%                    100%")
-sys.stdout = open("asciiArtGen_output.txt", "w")
-percent = 0
-printed = 0
-for y in range(image.shape[0]):
-    for x in range(image.shape[1]):
-        for ii in range(15):
-                if npAll(image[y, x] <= (ii + 1) * 17) and npAll(image[y, x] >= ii * 17):
-                    print(chars[ii], end = "")
-                    break
+import keyboard
+from cv2 import waitKey
+from tkinter import filedialog as fd
+from colorama import init as coloramaInit
+from colorama import Fore, Back, Style
+from Ascii_Art_Gen_Lib.create_image import GenerateASCII as Gen_Ascii_Art
+from Ascii_Art_Gen_Lib.create_video import GenerateASCIIVideo as Gen_Ascii_Art_Video
+from Ascii_Art_Gen_Lib.create_video import ReadVideoFromJSON as PlayVideo
+
+
+def openImgFile():
+    """IMage open function"""
+    f = fd.askopenfilename(title = "Select a Image", 
+                            filetypes = [
+                                ("Supported Images", "*.jpg *.jpeg *.jpg *.bmp *.dib *.jp2 *.png *.webp *.pbm *.pgm *.ppm *.pxm *.pnm *.pfm *.sr *.ras *.tiff *.tif *.exr *.hdr *.pic")
+                            ])
+    return os.path.abspath(f)
+def openVidFile():
+    """Video open function"""
+    f = fd.askopenfilename(title = "Select a Video",
+                            filetypes = [
+                                ("Video", "*.*")
+                            ])
+    return os.path.abspath(f)
+def openJsonFile():
+    f = fd.askopenfilename(title = "Select the Json File Containing the Video",
+                            filetypes = [
+                                ("JSON File", "*.json")
+                            ])
+    return os.path.abspath(f)
+def show_error_message(err):
+    print(f"""{Back.BLACK}{Fore.LIGHTRED_EX}
+[!] Generating ASCII Art Returned an Error:
+    {err}
+[!] Usually Code retrieved invalid user input.
+    Try using only numbers when entering a input, without any letters.
+    Otherwise it might be caused by a bug in the code.""")
     print()
-    percent = int((y / image.shape[0]) * 50)
-    if percent != printed:
-        for i in range((percent - printed) + 1):
-            print("-", file = terminal_stream, end = "", flush = True)
-            printed = printed + 1
+def show_banner():
+    """Show ASCII_ART banner"""
+    os.system("cls")
+    banner = r"""
+         ___                                                 ___
+        /   \         ____    ____   _   _                  /   \      ___     _______
+       / / \ \       /  __|  / ___| | | | |                / / \ \    |    \  |__   __|
+      / /___\ \      \  \   / /     | | | |               / /___\ \   |   _/     | |
+     / _______ \   __/  /   \ \___  | | | |              / ______\ \  | |\ \     | |
+    /_/       \_\ |____/     \____| |_| |_|   ________  /_/       \_\ |_| \_\    |_|
+                                             |________|   """ + f"""{Back.BLACK}{Fore.LIGHTBLACK_EX}(This is not the actual Art)  """
+    credentials = """
+                   A simple ASCII Art creation Code made by David L.""" 
+    helpd = """
+                                type "help" for help"""
+    print(f"{Fore.RED}{Back.BLACK}{banner}")
+    print(f"{Fore.RED}{Back.BLACK}{Style.BRIGHT}{credentials}", flush = True, end = "")
+    print(f"{Fore.LIGHTRED_EX}{Back.BLACK}{Style.DIM}{helpd}")
+
+def main():
+    """Main Loop"""
+    os.system("title Ascii_Art")
+    coloramaInit(autoreset = True)
+    show_banner()
+
+    while True:
+        inp = input(f"{Back.BLACK}{Fore.LIGHTBLACK_EX}Ascii_Art $> ").strip()
+        if inp == "image":
+            try:
+                Gen_Ascii_Art(openImgFile())
+            except Exception as e:
+                show_error_message(e)
+        elif inp == "video":
+            try:
+                Gen_Ascii_Art_Video(openVidFile(), input("[?] FPS? (leave empty for max) "), input("[?] Processes to work? Default is 1, \n    for mid-tier devices is 2 recommended, \n    but if you have a high-tier PC, you can set higher numbers. "), Dest = os.getcwd())
+            except Exception as e:
+                show_error_message(e)
+        elif inp == "play":
+            try:
+                v = openJsonFile()
+                print(f"{Back.BLACK}{Fore.LIGHTGREEN_EX}[!] Ready to Play! Space key to play. ")
+                while True:
+                    if keyboard.read_key() == "space":
+                        break
+                PlayVideo(v)
+            except Exception as e:
+                show_error_message(e)
+        elif inp == "":
+            pass
+        elif inp == "help":
+            print(f"""{Back.BLACK}{Fore.WHITE}
+[!] This is the ASCII Art Command Help.
+    The currently supported commands are:
+      help    -   Show this help
+      image   -   Generate ASCII Art Image
+      video   -   Generate ASCII Art Video
+      play    -   Play ASCII Art Video from File
+                  """)
+        else:
+            print(f"""{Fore.LIGHTRED_EX}{Back.BLACK}
+[!] Command not Recognized.
+    Type "help" for Information about available Commands.
+                  """)
+if __name__ == "__main__":
+    main()
